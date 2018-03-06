@@ -33,3 +33,5 @@ phpunit.phar
 
 # vagrant runtime
 /.vagrant
+/common/config/db-local.php
+/common/config/constant-local.php
