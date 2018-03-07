@@ -6,8 +6,8 @@ defined('YII_ENV') or define('YII_ENV', 'dev');
 define('DS', DIRECTORY_SEPARATOR);
 
 //特殊常量
-define('WECHAT_TOKEN','');
-
+define('WECHAT_APPID', ''); // 开发者ID(AppID
+define('WECHAT_TOKEN', ''); //微信开发者TOKEN (密钥)
 
 //自动加载全局函数，仅供测试
 if(YII_DEBUG){
