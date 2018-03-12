@@ -1,6 +1,7 @@
 <?php
 namespace api\controllers;
 
+use api\models\WechatEvent;
 use common\components\WechatCoreHelper;
 use Yii;
 use yii\base\Exception;
@@ -14,6 +15,12 @@ class SiteController extends Controller
 
     public $postObj;//接收微信请求数据
 
+    /**
+     * 接收后初始操作
+     * @param \yii\base\Action $action
+     * @return bool
+     * @throws Exception
+     */
     public function beforeAction($action)
     {
         try
@@ -37,7 +44,6 @@ class SiteController extends Controller
                 }else{
                     define ( 'FROM_USER_NAME', $this->postObj->FromUserName );//发送方帐号（用户OpenID） 接收到的数据
                     define ( 'TO_USER_NAME', $this->postObj->ToUserName );//开发者微信号
-                    define ( 'MSG_TYPE', $this->postObj->MsgType );//消息类型
                 }
             } else {
                 die ( '' );
@@ -54,42 +60,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $sendModel = new PUserSendMsg();
-        if ('text' == MSG_TYPE) {
-            //文本信息
-            $sendModel->matchSendContent($this->postObj->Content);
-            exit;
-        }elseif ('image' == MSG_TYPE){
-            //图片信息
-        }elseif ('location' == MSG_TYPE){
-            //地理信息
-        }elseif ('event' == MSG_TYPE) {
-            $event = $this->postObj->Event;//触发事件	 使用FromUserName + CreateTime 排重
-            $userModel = new PUserInfo();
-
-            if ('subscribe' == $event) {
-                //用户关注  更新用户数据表信息
-                $userInfo = $userModel->getUserInfo( FROM_USER_NAME );//取得用户详细信息
-                if (isset($userInfo['openid'])){
-                    //WechatCoreHelper::wechatLog($userInfo,'vrpeng003','err',new VrpengWechatLog() );
-                    $userModel->updateUserInfo($userInfo);
-                }else{
-                    WechatCoreHelper::wechatLog($userInfo,'vrpeng001','err',new VrpengWechatLog() );
-                }
-                $sendModel->sendSubscribeContent();
-
-            } elseif ($event == 'unsubscribe') {
-                //取消关注   相关数据操作
-                $userModel->updateSubscribeState( FROM_USER_NAME );
-
-            } elseif ($event == 'CLICK') {
-                //自定义菜单推送
-                $eventKey = $this->postObj->EventKey;
-                if ($eventKey == 'time') {
-
-                }
-            }
-        }
+        WechatEvent::factory($this->postObj)->MsgManage();
 
         exit('success');
     }
