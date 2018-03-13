@@ -1,16 +1,18 @@
 <?php
+
 namespace api\models;
+
 use yii\base\Exception;
 
 /**
  * 微信消息处理
  */
-class WechatEvent
+class WechatEventManage
 {
     public $postObj; //接收到的微信请求数据
 
     /**
-     * @return WechatEvent
+     * @return WechatEventManage
      */
     public static function factory($postObj)
     {
@@ -56,7 +58,7 @@ class WechatEvent
     public function EventManage()
     {
         try {
-            switch ($this->postObj->Event){
+            switch ($this->postObj->Event) {
                 case 'subscribe'://用户关注
                     break;
                 case 'unsubscribe':  //取消关注

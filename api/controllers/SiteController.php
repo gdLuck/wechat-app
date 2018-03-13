@@ -1,7 +1,8 @@
 <?php
+
 namespace api\controllers;
 
-use api\models\WechatEvent;
+use api\models\WechatEventManage;
 use common\components\WechatCoreHelper;
 use Yii;
 use yii\base\Exception;
@@ -23,8 +24,7 @@ class SiteController extends Controller
      */
     public function beforeAction($action)
     {
-        try
-        {
+        try {
             //you must define TOKEN by yourself
             if (!defined("WECHAT_TOKEN")) {
                 throw new Exception('TOKEN is not defined!');
@@ -36,17 +36,17 @@ class SiteController extends Controller
 
             $postStr = $GLOBALS ["HTTP_RAW_POST_DATA"];
             /* 防xml注入 */
-            libxml_disable_entity_loader ( true );
-            if (! empty ( $postStr )) {
-                $this->postObj = simplexml_load_string ( $postStr, 'SimpleXMLElement', LIBXML_NOCDATA );
-                if (empty ( $this->postObj )) {
-                    die ( 'poststr not null' );
-                }else{
-                    define ( 'FROM_USER_NAME', $this->postObj->FromUserName );//发送方帐号（用户OpenID） 接收到的数据
-                    define ( 'TO_USER_NAME', $this->postObj->ToUserName );//开发者微信号
+            libxml_disable_entity_loader(true);
+            if (!empty ($postStr)) {
+                $this->postObj = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
+                if (empty ($this->postObj)) {
+                    die ('poststr not null');
+                } else {
+                    define('FROM_USER_NAME', $this->postObj->FromUserName);//发送方帐号（用户OpenID） 接收到的数据
+                    define('TO_USER_NAME', $this->postObj->ToUserName);//开发者微信号
                 }
             } else {
-                die ( '' );
+                die ('');
             }
         } catch (Exception $e) {
             throw new Exception('500');
@@ -60,7 +60,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        WechatEvent::factory($this->postObj)->MsgManage();
+        WechatEventManage::factory($this->postObj)->MsgManage();
 
         exit('success');
     }

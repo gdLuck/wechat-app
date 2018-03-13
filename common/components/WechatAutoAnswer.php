@@ -15,10 +15,10 @@ class WechatAutoAnswer
     /**
      * @return WechatAutoAnswer
      */
-	public static function factory()
+	public static function factory($fromUserName = FROM_USER_NAME, $toUserName = TO_USER_NAME)
     {
         $class = __CLASS__;
-        return new $class();
+        return new $class($fromUserName = FROM_USER_NAME, $toUserName = TO_USER_NAME);
     }
 
     /**

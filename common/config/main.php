@@ -10,7 +10,7 @@ return [
 
         'cache' => [
             'class' => 'common\components\Cache',
-            'keyPrefix'   => 'yii:vrpeng:datacache:',
+            'keyPrefix'   => 'yii:wechat:datacache:',
             'redis' => [
                 'hostname' => '',
                 'password' => '',#本地配置会覆盖线上配置
@@ -20,7 +20,7 @@ return [
         ],
         'file_cache' => [
             'class' => 'yii\caching\FileCache',
-            //'keyPrefix' => 'fileCache_vrpeng:',
+            //'keyPrefix' => 'fileCache_wechat:',
             'directoryLevel' => 2,
         ],
         'redis' => [
