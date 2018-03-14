@@ -1,6 +1,6 @@
 <?php
 
-namespace commom\models;
+namespace common\models;
 
 use Yii;
 
@@ -12,7 +12,7 @@ use Yii;
  * @property int $type 1 关注  2 错误关键字回复
  * @property int $addtime
  */
-class AutoAnswer extends \yii\db\ActiveRecord
+class WechatAutoAnswer extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc

@@ -18,6 +18,9 @@ return [
         'test' => 'tKey', //测试
         'express' => 'exp', //物流公司数组id=>name
     ],
+    'wechat' => [
+        'accessToken' => 'wtoken'
+    ],
     'category' => [
         'mall-00' => 'cm00',
         'mall-01' => 'cm01',

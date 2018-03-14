@@ -1,6 +1,9 @@
 <?php
 namespace common\components;
 
+use yii\caching\MemCache;
+use yii\caching\FileCache;
+
 /**
  * 通用方法
  */
@@ -14,6 +17,54 @@ class Helper
 		$className = __CLASS__;
 		return new $className ();
 	}
+
+    /**
+     * 设定缓存路径
+     * @param string $directory
+     * @return FileCache|MemCache
+     */
+    public static function cache($directory='') {
+        /** @var FileCache|MemCache $cache */
+        $cache = \Yii::$app->cache;
+        if (in_array(get_class($cache),['common\components\Cache','yii\redis\Cache'])) {
+            //memcache
+            $cache->keyPrefix = $directory;
+            return $cache;
+        } else {
+            //文件缓存
+            $cachePath = \Yii::getAlias('@cache');
+            $path =  $cachePath. DS . $directory;
+            if (!is_dir($path))
+                self::createDir($directory,$cachePath);
+            $cache->cachePath = \Yii::getAlias('@cache') . DS . $directory;
+            return $cache;
+        }
+    }
+
+    /**
+     * 创建目录
+     * 可以递归创建，默认是以当前网站根目录下创建
+     * 第二个参数指定，就以第二参数目录下创建
+     * @param string $path      要创建的目录
+     * @param string $webroot   要创建目录的根目录
+     * @return boolean
+     */
+    public static function createDir($path, $webroot = null) {
+        $path = preg_replace('/\/+|\\+/', DS, $path);
+        $dirs = explode(DS, $path);
+        if (!is_dir($webroot))
+            $webroot = \Yii::getAlias("@webroot");
+        foreach ($dirs as $element) {
+            $webroot .= DS . $element;
+            if (!is_dir($webroot)) {
+                if (!mkdir($webroot, 0777))
+                    return false;
+                else
+                    chmod($webroot, 0777);
+            }
+        }
+        return true;
+    }
 
     /**
      * 加密密码

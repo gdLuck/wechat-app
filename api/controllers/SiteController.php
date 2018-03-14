@@ -56,6 +56,7 @@ class SiteController extends Controller
     }
 
     /**
+     * 微信开发者模式入口
      * @return mixed
      */
     public function actionIndex()

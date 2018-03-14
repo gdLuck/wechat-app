@@ -4,6 +4,8 @@
  */
 namespace common\components;
 
+use api\models\WechatJssdk;
+use common\models\WechatLog;
 use yii;
 use yii\base\Exception;
 
@@ -16,6 +18,22 @@ class WechatCoreHelper
     {
         $class = __CLASS__;
         return new $class();
+    }
+
+    /**
+     * 根据OPENID取得用户信息  公众号内使用(非网页授权获取,须在模块重定义Jssdk后使用)
+     * @param string $openid
+     * @return array
+     */
+    public function getWechatUserInfo($openid){
+        $cfg['ssl'] = true;
+
+        $access_token = WechatJssdk::factory()->getAccessToken();
+        $durl = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$openid.'&lang=zh_CN';
+        $token_data = self::curlGetContents($durl, $cfg);
+
+        return json_decode($token_data,true);
+
     }
 
     /**
@@ -68,50 +86,25 @@ class WechatCoreHelper
 			return false;
 		}
 	}
-	
-	/**
-	 * 从数据库取得用户授权信息  用户ID方法 (共用)
-	 * @param int $userid
-	 */
-//	public function getWebUserInfoToUid($userid){
-//
-//		$data = array();
-//		$userInfo = UserInfo::model()->findAllByPk($userid);
-//		if (empty($userInfo)){
-//			return $data;
-//		}else{
-//			$data['u_id']		= $userInfo[0]['u_id'];
-//			$data['nickname'] 	= $userInfo[0]['nickname'];
-//			$data['headimgurl'] = $userInfo[0]['headimgurl'];
-//		}
-//
-//		return $data;
-//	}
-	
-	/**
-	 * 日志信息记录 
-	 * @param string $log 日志信息
-	 * @param string $fromUserName 用户Openid
-	 * @param string $toUserName 开发者ID 
-	 * @param mixed $table  0 主错误表    其他(表实例)
-	 */
-//	public static function wechatLog($log='',$fromUserName='err',$toUserName='err',$talbe = 0){
-//		if ($talbe){
-//			$model = $talbe;
-//		}else{
-//			$model = new WechatLog();
-//		}
-//
-//		$model->log = json_encode($log);
-//		$model->tousername = $toUserName;
-//		$model->fromusername = $fromUserName;
-//		$model->add_time   = time();
-//		if ($model->save()){
-//			return true;
-//		}else{
-//			return false;
-//		}
-//	}
+
+    /**
+     * @param array|string $log
+     * @param string $fromUserName
+     * @param string $toUserName
+     */
+    public static function WechatLogRecord($log,$fromUserName='err',$toUserName='err')
+    {
+        $model = WechatLog::model();
+        $model->log = is_array($log) ? json_encode($log) : $log ;
+        $model->to_user_name = $toUserName;
+        $model->from_user_name = $fromUserName;
+        $model->add_time   = time();
+        if ($model->save()){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
 	/**
 	 * 微信用户昵称处理 替换emoji表情

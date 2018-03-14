@@ -2,6 +2,7 @@
 
 namespace api\models;
 
+use common\components\WechatCoreHelper;
 use yii\base\Exception;
 
 /**
@@ -60,6 +61,8 @@ class WechatEventManage
         try {
             switch ($this->postObj->Event) {
                 case 'subscribe'://用户关注
+                    $wechatUserInfo = WechatCoreHelper::factory()->getWechatUserInfo(FROM_USER_NAME);
+
                     break;
                 case 'unsubscribe':  //取消关注
                     break;
