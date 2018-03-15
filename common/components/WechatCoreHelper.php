@@ -25,7 +25,8 @@ class WechatCoreHelper
      * @param string $openid
      * @return array
      */
-    public function getWechatUserInfo($openid){
+    public function getWechatUserInfo($openid):array
+    {
         $cfg['ssl'] = true;
 
         $access_token = WechatJssdk::factory()->getAccessToken();
@@ -92,7 +93,7 @@ class WechatCoreHelper
      * @param string $fromUserName
      * @param string $toUserName
      */
-    public static function WechatLogRecord($log,$fromUserName='err',$toUserName='err')
+    public static function wechatLogRecord($log,$fromUserName='err',$toUserName='err'):bool
     {
         $model = WechatLog::model();
         $model->log = is_array($log) ? json_encode($log) : $log ;

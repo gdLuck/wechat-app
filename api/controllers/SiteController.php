@@ -2,7 +2,7 @@
 
 namespace api\controllers;
 
-use api\models\WechatEventManage;
+use api\models\MsgEventManage;
 use common\components\WechatCoreHelper;
 use Yii;
 use yii\base\Exception;
@@ -61,7 +61,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        WechatEventManage::factory($this->postObj)->MsgManage();
+        MsgEventManage::factory($this->postObj)->MsgManage();
 
         exit('success');
     }

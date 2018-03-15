@@ -14,6 +14,9 @@ use Yii;
  */
 class WechatAutoAnswer extends \yii\db\ActiveRecord
 {
+    const STATE_SUBSCRIBE=1; //订阅回复状态
+    const STATE_ERROR =2; //错误回复
+
     /**
      * @inheritdoc
      */

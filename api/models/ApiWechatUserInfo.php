@@ -7,17 +7,26 @@
 
 namespace api\models;
 
-
 use common\components\WechatCoreHelper;
 use common\models\WechatUserInfo;
 
-class ApiUserInfo
+class ApiWechatUserInfo
 {
+    /**
+     * @return ApiWechatUserInfo
+     */
+    public static function model()
+    {
+        $class = __CLASS__;
+        return new $class();
+    }
+
     /**
      * 更新用户信息 (订阅号内用户订阅时)
      * @param array $userInfo
      */
-    public function updateUserInfo($userInfo){
+    public function updateUserInfo(array ...$userInfo):bool
+    {
 
         $user = WechatUserInfo::find()->where(['openid'=> $userInfo['openid']])
             ->limit(1)->one();
@@ -32,7 +41,7 @@ class ApiUserInfo
                 'city'      => $userInfo['city'],
                 'country'   => $userInfo['country'],
                 'province'  => $userInfo['province'],
-                'headimgurl'    => empty($userInfo['headimgurl']) ? $userInfo['headimgurl'] : '' ,
+                'headimgurl'    => $userInfo['headimgurl'] ?? '' , // 7新特性
                 'subscribe_time'=> $userInfo['subscribe_time'],
                 'unionid'   => $userInfo['unionid'],
                 'remark'    => $userInfo['remark'],
@@ -41,30 +50,23 @@ class ApiUserInfo
             ];
             $user->attributes = $values;
             if ($user->save()){
-                return $user->uid;
+                return true;
             }else{
-                WechatCoreHelper::WechatLogRecord($userInfo, $userInfo['openid'], 'err');
+                WechatCoreHelper::wechatLogRecord($userInfo, $userInfo['openid'], 'err');
                 return false;
             }
         }else{
             //更新用户信息
-            $uid  = (int)$user->uid;
-
-
-            $count = ApiUserInfo::model()->updateByPk($uid,
-                array(
-                    'nickname'  => WechatCoreHelper::deleteNicknameEmoji($userInfo['nickname']),
-                    'headimgurl'=> empty($userInfo['headimgurl']) ? $userInfo['headimgurl'] : 'http://cdn.joyup.tv/wechat/images/def.png',
-                    'remark' 	=> $userInfo['remark'],
-                    'city'		=> $userInfo['city'],
-                    'u_state'	=> 1,
-                    'add_time'	=>time()
-                )
-            );
-            if ($count >0){
-                return $uid;
+            $user->nickname     = WechatCoreHelper::replaceNicknameEmoji($userInfo['nickname']);
+            $user->headimgurl   = empty($userInfo['headimgurl']) ? $userInfo['headimgurl'] : '';
+            $user->remark       = $userInfo['remark'];
+            $user->city         = $userInfo['city'];
+            $user->u_state      = WechatUserInfo::TYPE_WECHAT;
+            if ($user->save()){
+                return true;
             }else{
-                WechatCoreHelper::wechatLog($userInfo,106,'err',new VrpengWechatLog() );
+                WechatCoreHelper::wechatLogRecord($userInfo,106,'err' );
+                return false;
             }
         }
     }
@@ -74,11 +76,13 @@ class ApiUserInfo
      * @param string $openid
      * @return bool
      */
-    public function updateSubscribeState($openid){
+    public function updateSubscribeState($openid)
+    {
         //更新用户信息
-        $count =VrpengUserInfo::model()->updateAll(array('u_state'=>0),
-            'openid=:openid',array(':openid'=>$openid));
-        if ($count >0){
+        $model = WechatUserInfo::find()->where('openid=:openid',[':openid'=>$openid])
+            ->limit(1)->one();
+        $model->u_state = 0;
+        if ($model->save()){
             return true;
         }
         return FALSE;
@@ -87,7 +91,8 @@ class ApiUserInfo
     /**
      * 检查用户信息是否存在
      */
-    public function CheckUser(){
+    public function CheckUser()
+    {
 
     }
 }

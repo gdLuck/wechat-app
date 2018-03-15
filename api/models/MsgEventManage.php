@@ -8,12 +8,12 @@ use yii\base\Exception;
 /**
  * 微信消息处理
  */
-class WechatEventManage
+class MsgEventManage
 {
     public $postObj; //接收到的微信请求数据
 
     /**
-     * @return WechatEventManage
+     * @return MsgEventManage
      */
     public static function factory($postObj)
     {
@@ -35,6 +35,9 @@ class WechatEventManage
         try {
             switch ($this->postObj->MsgType) {
                 case 'text'://文本信息
+                    $textMsg = new TextManage();
+                    $textMsg->userContent = $this->postObj->Content;
+                    $textMsg->result();
                     break;
                 case 'image'://图片信息
                     break;
@@ -61,8 +64,8 @@ class WechatEventManage
         try {
             switch ($this->postObj->Event) {
                 case 'subscribe'://用户关注
-                    $wechatUserInfo = WechatCoreHelper::factory()->getWechatUserInfo(FROM_USER_NAME);
-
+                    $subscribe = new SubscribeManage();
+                    $subscribe->result();
                     break;
                 case 'unsubscribe':  //取消关注
                     break;
