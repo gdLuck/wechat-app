@@ -12,6 +12,9 @@ use common\models\WechatAutoAnswer;
 
 class SubscribeManage extends SendAbstraction implements ManageInterface
 {
+    /**
+     * 订阅处理
+     */
     public function result()
     {
         // TODO: Implement result() method.
@@ -26,6 +29,15 @@ class SubscribeManage extends SendAbstraction implements ManageInterface
         }
         $this->sendSubscribeContent();
     }
+
+    /**
+     * 取消订阅
+     */
+    public function unsubscribe()
+    {
+        ApiWechatUserInfo::model()->updateSubscribeState(FROM_USER_NAME);
+    }
+
 
     //回复订阅信息
     private function sendSubscribeContent()

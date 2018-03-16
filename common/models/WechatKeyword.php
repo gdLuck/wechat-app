@@ -15,8 +15,29 @@ use Yii;
  * @property string $remark
  * @property int $add_time
  */
-class Keyword extends \yii\db\ActiveRecord
+class WechatKeyword extends \yii\db\ActiveRecord
 {
+    const TYPE_TEXT = 1; //文本回复
+    const TYPE_NEWS = 2; //图文回复
+
+    private static $_models = array();            // class name => model
+
+    /**
+     * 静态调用子类方法
+     * Returns the static model of the specified request class.
+     * @param string $className request class name.
+     * @return WechatKeyword  request model instance.
+     */
+    public static function model($className = __CLASS__)
+    {
+        if (isset(self::$_models[$className]))
+            return self::$_models[$className];
+        else {
+            $model = self::$_models[$className] = new $className(null);
+            return $model;
+        }
+    }
+
     /**
      * @inheritdoc
      */

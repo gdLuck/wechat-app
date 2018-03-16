@@ -46,7 +46,7 @@ class ApiWechatUserInfo
                 'unionid'   => $userInfo['unionid'],
                 'remark'    => $userInfo['remark'],
                 'groupid'   => $userInfo['groupid'],
-                'u_state'   => WechatUserInfo::TYPE_WECHAT
+                'u_state'   => WechatUserInfo::STATE_SUBSCRIBE
             ];
             $user->attributes = $values;
             if ($user->save()){
@@ -61,7 +61,7 @@ class ApiWechatUserInfo
             $user->headimgurl   = empty($userInfo['headimgurl']) ? $userInfo['headimgurl'] : '';
             $user->remark       = $userInfo['remark'];
             $user->city         = $userInfo['city'];
-            $user->u_state      = WechatUserInfo::TYPE_WECHAT;
+            $user->u_state      = WechatUserInfo::STATE_UNSUBSCRIBE;
             if ($user->save()){
                 return true;
             }else{

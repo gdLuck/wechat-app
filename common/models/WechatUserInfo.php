@@ -29,8 +29,8 @@ use yii\db\ActiveRecord;
  */
 class WechatUserInfo extends \yii\db\ActiveRecord
 {
-    const TYPE_WECHAT = 1;
-    const TYPE_WEB = 1;
+    const STATE_SUBSCRIBE = 1; //订阅
+    const STATE_UNSUBSCRIBE = 0; //取消订阅
 
     /**
      * @inheritdoc

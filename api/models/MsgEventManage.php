@@ -51,6 +51,7 @@ class MsgEventManage
                     break;
             }
         } catch (Exception $e) {
+            WechatCoreHelper::wechatLogRecord($e->getMessage());
             throw new Exception($e->getMessage());
         }
     }
@@ -68,6 +69,8 @@ class MsgEventManage
                     $subscribe->result();
                     break;
                 case 'unsubscribe':  //取消关注
+                    $unSubscribe = new SubscribeManage();
+                    $unSubscribe->unsubscribe();
                     break;
                 case 'CLICK'://自定义菜单推送
                     break;
