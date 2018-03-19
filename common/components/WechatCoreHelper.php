@@ -96,7 +96,7 @@ class WechatCoreHelper
     public static function wechatLogRecord($log,$fromUserName='err',$toUserName='err'):bool
     {
         $model = WechatLog::model();
-        $model->log = is_array($log) ? json_encode($log) : $log ;
+        $model->log = is_string($log) ? $log : json_encode($log) ;
         $model->to_user_name = $toUserName;
         $model->from_user_name = $fromUserName;
         $model->add_time   = time();
