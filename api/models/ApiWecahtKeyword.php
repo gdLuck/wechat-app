@@ -6,24 +6,34 @@
 
 namespace api\models;
 
-
 use common\models\WechatKeyword;
 
-class ApiWecahtKeyword extends WechatKeyword
+class ApiWecahtKeyword
 {
+
+    /**
+     * @return ApiWecahtKeyword
+     */
+    public static function model()
+    {
+        $class = __CLASS__;
+        return new $class();
+    }
+
     /**
      * 匹配用户关键字（完全匹配）
      */
     public function KeywordMatch($keyword)
     {
-        $result = self::find()->where(['keyword'=> $keyword])->limit(1)->one();
+        $result = WechatKeyword::find()->where(['keyword'=> $keyword])->limit(1)->one();
+
         $data = [];
         if (!empty($result)){
-            $data['kid'] 	 	= $result[0]['kid'];
-            $data['keyword'] 	= $result[0]['keyword'];
-            $data['vfID']	 	= $result[0]['vf_id'];
-            $data['content'] 	= $result[0]['content'];
-            $data['type'] 	 	= $result[0]['type'];
+            $data['kid'] 	 	= $result->kid;
+            $data['keyword'] 	= $result->keyword;
+            $data['vfID']	 	= $result->vf_id;
+            $data['content'] 	= $result->content;
+            $data['type'] 	 	= $result->type;
         }
 
         return $data;
@@ -31,9 +41,10 @@ class ApiWecahtKeyword extends WechatKeyword
 
     /**
      * 图文内容
+     * @param int 素材ID
      */
-    public function KeywordNewsFodder()
+    public function KeywordNewsFodder($vfid):array
     {
-
+        return [];
     }
 }

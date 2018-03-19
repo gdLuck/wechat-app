@@ -51,7 +51,7 @@ class MsgEventManage
                     break;
             }
         } catch (Exception $e) {
-            WechatCoreHelper::wechatLogRecord($e->getMessage());
+            WechatCoreHelper::wechatLogRecord($e->getMessage(), 'MsgManage');
             throw new Exception($e->getMessage());
         }
     }
