@@ -49,6 +49,7 @@ class SiteController extends Controller
                 die ('');
             }
         } catch (Exception $e) {
+            WechatCoreHelper::wechatLogRecord($e->getMessage(),'beforeAction');
             throw new Exception('500');
         }
 
@@ -61,8 +62,8 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-//        $this->postObj = json_decode('{"ToUserName":"gh_ccfabcebd005","FromUserName":"oG0C8wru6XsIL_YdOmV5TLR7-46w","CreateTime":"1464077641","MsgType":"text","Content":"11623","MsgId":"6288165587314314005"}');
-        WechatCoreHelper::wechatLogRecord($this->postObj,'init', 'test');
+        //$this->postObj = json_decode('{"ToUserName":"gh_ccfabcebd005","FromUserName":"oG0C8wru6XsIL_YdOmV5TLR7-46w","CreateTime":"1464077641","MsgType":"text","Content":"11623","MsgId":"6288165587314314005"}');
+        //WechatCoreHelper::wechatLogRecord($this->postObj,'init', 'test');
 
         MsgEventManage::factory($this->postObj)->MsgManage();
 

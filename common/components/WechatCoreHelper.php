@@ -43,11 +43,11 @@ class WechatCoreHelper
      * @param int $first 0默认  1首次 是否首次验证
      * @return
      */
-    public function valid($token,$first =FIRST_TIME)
+    public function valid($token)
     {
         $echostr = yii::$app->request->get('echostr');
 
-        if ($first == 1){
+        if (isset($_GET['echostr'])){
             if($this->checkSignature($token)){//首次验证使用
                 die($echostr);
             }
@@ -89,6 +89,7 @@ class WechatCoreHelper
 	}
 
     /**
+     * 日志信息记录
      * @param array|string $log
      * @param string $fromUserName
      * @param string $toUserName
