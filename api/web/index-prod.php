@@ -1,5 +1,5 @@
 <?php
-require(__DIR__ . '/../../common/config/constant.php');
+require(__DIR__ . '/../../common/config/constant-prod.php');
 
 require(__DIR__ . '/../../vendor/autoload.php');
 require(__DIR__ . '/../../vendor/yiisoft/yii2/Yii.php');
