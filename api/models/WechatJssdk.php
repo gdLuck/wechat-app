@@ -16,13 +16,13 @@ class WechatJssdk extends Jssdk
      * @param string $appSecret
      * @return WechatJssdk
      */
-    public static function factory($appid = WECHAT_APPID, $appSecret = WECHAT_TOKEN)
+    public static function factory($appid = WECHAT_APPID, $appSecret = WECHAT_APP_SECRET)
     {
         $class = __CLASS__;
         return new $class($appid, $appSecret);
     }
 
-    public function __construct($appid = WECHAT_APPID, $appSecret = WECHAT_TOKEN)
+    public function __construct($appid = WECHAT_APPID, $appSecret = WECHAT_APP_SECRET)
     {
         parent::__construct($appid, $appSecret);
     }
