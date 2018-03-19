@@ -19,7 +19,7 @@ return [
         'express' => 'exp', //物流公司数组id=>name
     ],
     'wechat' => [
-        'accessToken' => 'wtoken'
+        'accessToken' => 'baseAccessToken'
     ],
     'category' => [
         'mall-00' => 'cm00',

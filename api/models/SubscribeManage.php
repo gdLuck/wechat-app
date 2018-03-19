@@ -25,7 +25,7 @@ class SubscribeManage extends SendAbstraction implements ManageInterface
             //更新用户信息
             ApiWechatUserInfo::model()->updateUserInfo($wechatUserInfo);
         }else{
-            WechatCoreHelper::wechatLogRecord($wechatUserInfo,FROM_USER_NAME,'err');
+            WechatCoreHelper::wechatLogRecord($wechatUserInfo,FROM_USER_NAME,'userInfo err');
         }
         $this->sendSubscribeContent();
     }

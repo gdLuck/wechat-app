@@ -22,7 +22,7 @@ class WechatCoreHelper
 
     /**
      * 根据OPENID取得用户信息  公众号内使用(非网页授权获取,须在模块重定义Jssdk后使用)
-     * @param string $openid
+     * @param string $openid //公众号必须微信认证
      * @return array
      */
     public function getWechatUserInfo($openid):array
