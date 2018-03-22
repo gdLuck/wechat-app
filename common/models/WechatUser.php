@@ -31,6 +31,15 @@ class WechatUser extends \yii\db\ActiveRecord implements UserIdentityInterface
     const STATUS_ACTIVE = 10;
 
     /**
+     * @return WechatUser
+     */
+    public static function model()
+    {
+        $class = __CLASS__;
+        return new $class();
+    }
+
+    /**
      * @inheritdoc
      */
     public static function tableName()
@@ -118,11 +127,6 @@ class WechatUser extends \yii\db\ActiveRecord implements UserIdentityInterface
         return $this->getAuthkey() === $authKey;
     }
 
-    public function login(UserIdentityInterface $userModel, bool $rememberMe = false): bool
-    {
-        // TODO: Implement login() method.
-    }
-
     public static function findByUsername($username)
     {
         return static::findOne(['username'=> $username, 'status'=> self::STATUS_ACTIVE]);
@@ -133,4 +137,33 @@ class WechatUser extends \yii\db\ActiveRecord implements UserIdentityInterface
         return static::findOne(['id'=>$id, 'status'=> self::STATUS_ACTIVE]);
     }
 
+    /**
+     * 设置登录信息
+     * @param UserIdentityInterface $userModel
+     * @param bool $rememberMe
+     * @return bool
+     */
+    public function login(UserIdentityInterface $userModel, bool $rememberMe = false): bool
+    {
+        // TODO: Implement login() method.
+        $session = yii::$app->session;
+
+        //设置用户登录 信息
+        $id = $userModel->getId();
+        $ip = Yii::$app->getRequest()->getUserIP();
+        $loginInfo = [
+            'id' => $id,
+            'ip' => $ip,
+            'username' => $userModel->username,
+            'time' => time()
+        ];
+        $session->set('loginInfo', json_encode($loginInfo));
+    }
+
+    public static function isGuest()
+    {
+        $session = yii::$app->session;
+        $loginInfo = json_decode($session->get('loginInfo'));
+        return !empty($loginInfo);
+    }
 }
