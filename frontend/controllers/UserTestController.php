@@ -9,6 +9,7 @@ namespace frontend\controllers;
 
 
 use common\models\WechatUser;
+use frontend\models\LoginForm;
 use yii\web\Controller;
 
 class UserTestController extends Controller
@@ -22,7 +23,12 @@ class UserTestController extends Controller
 
     public function actionLogin()
     {
-        $model = WechatUser::model();
+        if (!WechatUser::isGuest()){
+            $this->goHome();
+        }
+
+        $model = new LoginForm();
+        if ($model->)
 
         return $this->render('login',[
             'model' => $model

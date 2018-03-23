@@ -137,6 +137,8 @@ class WechatUser extends \yii\db\ActiveRecord implements UserIdentityInterface
         return static::findOne(['id'=>$id, 'status'=> self::STATUS_ACTIVE]);
     }
 
+    private $identity = null;
+
     /**
      * 设置登录信息
      * @param UserIdentityInterface $userModel
@@ -158,12 +160,22 @@ class WechatUser extends \yii\db\ActiveRecord implements UserIdentityInterface
             'time' => time()
         ];
         $session->set('loginInfo', json_encode($loginInfo));
+
+        return !self::isGuest();
+    }
+
+    public static function getIdentity()
+    {
+        static $loginAccount = null;
+        if ($loginAccount == null || (json_decode($loginAccount).time )){
+            $session = Yii::$app->getSession();
+            $loginAccount = $session->getIsActive() ? $session->get('loginInfo') : null;
+        }
+        return $loginAccount;
     }
 
     public static function isGuest()
     {
-        $session = yii::$app->session;
-        $loginInfo = json_decode($session->get('loginInfo'));
-        return !empty($loginInfo);
+
     }
 }
