@@ -8,6 +8,8 @@ namespace common\models;
 use common\components\Security;
 use common\components\UserIdentityInterface;
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "{{%user}}".
@@ -53,7 +55,7 @@ class WechatUser extends \yii\db\ActiveRecord implements UserIdentityInterface
     public function rules()
     {
         return [
-            [['username', 'auth_key', 'password_hash', 'phone', 'qq_id', 'created_at', 'update_at'], 'required'],
+            [['username', 'auth_key', 'password_hash'], 'required'],
             [['created_at', 'update_at'], 'integer'],
             [['username'], 'string', 'max' => 12],
             [['nickname'], 'string', 'max' => 20],
@@ -64,9 +66,7 @@ class WechatUser extends \yii\db\ActiveRecord implements UserIdentityInterface
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
             [['username'], 'unique'],
-            [['phone'], 'unique'],
             [['email'], 'unique'],
-            [['password_reset_token'], 'unique'],
         ];
     }
 
@@ -85,9 +85,22 @@ class WechatUser extends \yii\db\ActiveRecord implements UserIdentityInterface
             'phone' => 'Phone',
             'email' => 'Email',
             'qq_id' => '绑定的QQ授权ID',
-            'status' => '1 男 2女 0保密',
+            'status' => '0 禁止  10 活动用户',
             'created_at' => 'Created At',
             'update_at' => 'Update At',
+        ];
+    }
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['update_at', 'created_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['update_at']
+                ]
+            ]
         ];
     }
 
@@ -137,8 +150,6 @@ class WechatUser extends \yii\db\ActiveRecord implements UserIdentityInterface
         return static::findOne(['id'=>$id, 'status'=> self::STATUS_ACTIVE]);
     }
 
-    private $identity = null;
-
     /**
      * 设置登录信息
      * @param UserIdentityInterface $userModel
@@ -167,15 +178,20 @@ class WechatUser extends \yii\db\ActiveRecord implements UserIdentityInterface
     public static function getIdentity()
     {
         static $loginAccount = null;
-        if ($loginAccount == null || (json_decode($loginAccount).time )){
-            $session = Yii::$app->getSession();
-            $loginAccount = $session->getIsActive() ? $session->get('loginInfo') : null;
+        if ($loginAccount != null && ($loginAccount->time + 3600 > time() ) ){
+            return $loginAccount;
         }
-        return $loginAccount;
+        $session = Yii::$app->getSession();
+        return $loginAccount = $session->getIsActive() ? json_decode($session->get('loginInfo')) : null;
     }
 
     public static function isGuest()
     {
+        return self::getIdentity() === null;
+    }
 
+    public static function logout()
+    {
+        Yii::$app->getSession()->destroy();
     }
 }

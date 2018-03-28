@@ -36,16 +36,16 @@ AppAsset::register($this);
         ],
     ]);
     $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
+        ['label' => 'Home', 'url' => ['/user-test/index']],
     ];
-    if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => 'Signup', 'url' => ['/userTest/signup']];
-        $menuItems[] = ['label' => 'Login', 'url' => ['/userTest/login']];
+    if (\common\models\WechatUser::isGuest()) {
+        $menuItems[] = ['label' => 'Signup', 'url' => ['/user-test/signup']];
+        $menuItems[] = ['label' => 'Login', 'url' => ['/user-test/login']];
     } else {
         $menuItems[] = '<li>'
             . Html::beginForm(['/userTest/logout'], 'post')
             . Html::submitButton(
-                'Logout (' . Yii::$app->user->identity->username . ')',
+                'Logout (' . \common\models\WechatUser::getIdentity()->username . ')',
                 ['class' => 'btn btn-link logout']
             )
             . Html::endForm()
