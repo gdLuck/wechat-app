@@ -50,7 +50,7 @@ class SiteController extends Controller
                 die ('');
             }
         } catch (Exception $e) {
-            WechatCoreHelper::wechatLogRecord($e->getMessage(),'beforeAction');
+            WechatCoreHelper::wechatLogRecord($e->getMessage(), 'beforeAction');
             throw new Exception('500');
         }
 

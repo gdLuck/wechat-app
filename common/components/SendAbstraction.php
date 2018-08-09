@@ -2,7 +2,7 @@
 namespace common\components;
 
 /**
- * 微信内容处理返回类
+ * 微信内容处理返回类-抽象类
  */
 abstract class SendAbstraction implements SendInterface
 {
